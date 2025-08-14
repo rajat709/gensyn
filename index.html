@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenSyn by Dataoorts - Next-Gen Synthetic Data Cloud</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Using a kit for icons, can be replaced -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #0A0A14;
+            --secondary-color: #1a1a2e;
+            --accent-color-1: #6a11cb;
+            --accent-color-2: #2575fc;
+            --accent-glow: rgba(106, 17, 203, 0.5);
+            --text-color: #EAEAEF;
+            --text-muted: #9A9AB0;
+            --glass-bg: rgba(16, 16, 28, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-highlight: rgba(255, 255, 255, 0.05);
+            scroll-padding-top: 100px;
+        }
+
+        /* --- CSS Reset & Base Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Animated & Interactive Background --- */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--accent-glow),
+                transparent 40%
+            );
+            z-index: -2;
+            pointer-events: none;
+        }
+        
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+            animation: pan-image 60s linear infinite;
+        }
+
+        @keyframes pan-image {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50%, -50%); }
+        }
+
+        /* --- General Components --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 4rem;
+            background: linear-gradient(90deg, #d8b4fe, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        h2 { font-size: 2.8rem; letter-spacing: -1px; }
+        h3 { font-size: 1.25rem; color: var(--text-color); }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-2));
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(37, 117, 252, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(106, 17, 203, 0.5);
+        }
+
+        /* --- Header --- */
+        .header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 100;
+            background: rgba(10, 10, 20, 0.5);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .logo span {
+            font-weight: 400;
+            opacity: 0.7;
+        }
+        
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-color);
+        }
+
+        /* --- Scroll Animations --- */
+        .animated-section {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp auto linear forwards;
+            animation-timeline: view();
+            animation-range-start: entry 10%;
+            animation-range-end: cover 40%;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 120px 0;
+            text-align: center;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 750px;
+            margin: 1.5rem auto 3rem auto;
+        }
+
+        /* --- Features Section --- */
+        .features {
+            padding: 100px 0;
+        }
+        .features-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Pricing Section --- */
+        .pricing {
+            padding: 100px 0;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            padding-left: 1.5rem;
+            border-left: 4px solid var(--accent-color-1);
+        }
+
+        /* --- Interactive Card Styling --- */
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(8px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: var(--mouse-y, 0);
+            left: var(--mouse-x, 0);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(138, 45, 226, 0.25), transparent 60%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--glass-highlight);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 0.5rem;
+        }
+        
+        .card-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        
+        .card-description {
+            flex-grow: 1;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .card .btn {
+            margin-top: 1.5rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 80px;
+            background-color: var(--primary-color);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer p { margin: 0.5rem 0; }
+        .footer a {
+            color: var(--accent-color-2);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        /* --- Modal for Tally Form --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: #10101C;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--text-color);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            height: 70vh;
+            max-height: 550px;
+        }
+        
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+             .header .btn { display: none; }
+             .nav-links { display: none; } /* Or implement a mobile menu */
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2.2rem; }
+            .hero { padding: 80px 0; }
+            .pricing-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">GenSyn <span>by Dataoorts</span></a>
+             <nav>
+                <ul class="nav-links">
+                    <li><a href="#features">Why GenSyn</a></li>
+                    <li><a href="#pricing">Models & Pricing</a></li>
+                </ul>
+            </nav>
+            <button class="btn register-btn">Get Access</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero animated-section">
+            <div class="container">
+                <h1>The Future of AI is Built on Data.</h1>
+                <p>GenSyn is your dedicated cloud for generating massive, high-quality synthetic datasets. Power your generative AI projects with elite models from Meta & OpenAI, all through one simple, affordable API.</p>
+                <button class="btn btn-large register-btn">Register for Early Access</button>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section id="features" class="features animated-section">
+            <div class="container">
+                <div class="features-header">
+                    <h2>The GenSyn Advantage</h2>
+                    <p>Go beyond limitations. Create the exact data you need, at any scale.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="icon"><i class="fas fa-coins"></i></div>
+                        <h3>Unbeatable Affordability</h3>
+                        <p>Access top-tier models at a fraction of the standard cost, making large-scale data generation economically viable.</p>
+                    </div>
+                    <div class="feature-card">
+                         <div class="icon"><i class="fas fa-award"></i></div>
+                        <h3>Superior Quality</h3>
+                        <p>Leverage the world's most advanced models to produce nuanced, coherent, and contextually rich synthetic data.</p>
+                    </div>
+                    <div class="feature-card">
+                         <div class="icon"><i class="fas fa-bolt"></i></div>
+                        <h3>Effortless Scalability</h3>
+                        <p>A single, high-throughput API designed for bulk generation. Go from prototype to production seamlessly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing animated-section">
+            <div class="container">
+                <div class="pricing-header">
+                    <h2>Our Model Fleet & Pricing</h2>
+                    <p>Direct access to a curated selection of industry-leading models for text and image synthesis.</p>
+                </div>
+
+                <!-- Text Generation -->
+                <h3 class="section-subtitle">Text Generation Models</h3>
+                <div class="pricing-grid">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>openai/gpt-oss-120b</h3>
+                                <div class="card-price">$0.45 <span>/ 1M tokens</span></div>
+                            </div>
+                            <p class="card-description">OpenAI’s premier open-weight model for production-grade, general-purpose tasks requiring high reasoning capabilities.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>qwen/qwq-32b</h3>
+                                <div class="card-price">$0.45 <span>/ 1M tokens</span></div>
+                            </div>
+                            <p class="card-description">A powerful reasoning model from the Qwen series, excelling in complex problems and achieving performance competitive with SOTA models.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>deepseek-ai/deepseek-r1-distill-qwen-32b</h3>
+                                <div class="card-price">$0.45 <span>/ 1M tokens</span></div>
+                            </div>
+                            <p class="card-description">A distilled model based on Qwen2.5, outperforming OpenAI-o1-mini and setting new SOTA results for dense models.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>meta/llama-4-scout-17b-16e-instruct</h3>
+                                <div class="card-price">$0.30 <span>/ 1M tokens</span></div>
+                            </div>
+                            <p class="card-description">Meta's natively multimodal model with a Mixture-of-Experts architecture for industry-leading text and image understanding.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>meta/llama-3.3-70b-instruct-fp8-fast</h3>
+                                <div class="card-price">$0.30 <span>/ 1M tokens</span></div>
+                            </div>
+                            <p class="card-description">The Llama 3.3 70B model quantized to fp8, offering an optimized balance of speed and power for instruct-following tasks.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>gpt-oss-20b</h3>
+                                <div class="card-price">$0.25 <span>/ 1M tokens</span></div>
+                            </div>
+                            <p class="card-description">OpenAI’s open-weight model designed for lower latency, local deployment, or specialized use-cases without compromising quality.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>meta/llama-3.1-8b-instruct-fast</h3>
+                                <div class="card-price">$0.06 <span>/ 1M tokens</span></div>
+                            </div>
+                            <p class="card-description">An efficient, fast, and multilingual model optimized for dialogue. A cost-effective solution for high-volume generation.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Image Generation -->
+                <h3 class="section-subtitle" style="margin-top: 5rem;">Image Generation Model</h3>
+                <div class="pricing-grid">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>black-forest-labs/flux-1-schnell</h3>
+                                <div class="card-price">$0.0010 <span>/ image</span></div>
+                            </div>
+                            <p class="card-description">A 12B parameter rectified flow transformer capable of rapidly generating high-fidelity images from text. Perfect for bulk image synthesis.</p>
+                            <button class="btn register-btn">Select Model</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 GenSyn. A high-performance project by <a href="https://dataoorts.com" target="_blank" rel="noopener noreferrer">Dataoorts.com</a>.</p>
+            <p>Leading the future of GPU Cloud and Synthetic Data Generation.</p>
+        </div>
+    </footer>
+
+    <!-- Tally Form Modal -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+            <div class="modal-body">
+                <iframe src="https://tally.so/embed/wLr7M2?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Interactive Background Effect ---
+            const body = document.body;
+            window.addEventListener('mousemove', (e) => {
+                body.style.setProperty('--mouse-x', `${e.clientX}px`);
+                body.style.setProperty('--mouse-y', `${e.clientY}px`);
+            });
+            
+            // --- Interactive Card Spotlight Effect ---
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // --- Modal Logic ---
+            const modalOverlay = document.getElementById('registerModal');
+            const registerBtns = document.querySelectorAll('.register-btn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+
+            const openModal = () => modalOverlay.classList.add('show');
+            const closeModal = () => modalOverlay.classList.remove('show');
+
+            registerBtns.forEach(btn => btn.addEventListener('click', openModal));
+            closeModalBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('show')) closeModal();
+            });
+        });
+    </script>
+</body>
+</html>
