@@ -205,14 +205,16 @@
             max-width: 750px;
             margin: 1.5rem auto 3rem auto;
         }
+        
+        /* --- Section Headers --- */
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
 
         /* --- Features Section --- */
         .features {
             padding: 100px 0;
-        }
-        .features-header {
-            text-align: center;
-            margin-bottom: 4rem;
         }
         .features-grid {
             display: grid;
@@ -236,14 +238,47 @@
             background-clip: text;
         }
 
+        /* --- NEW Security Section --- */
+        .security {
+            padding: 100px 0;
+        }
+        .security-content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 50px;
+            margin-top: 4rem;
+            backdrop-filter: blur(8px);
+        }
+        .security-icon {
+            flex: 1;
+            text-align: center;
+            font-size: 10rem;
+            background: linear-gradient(145deg, var(--accent-color-1), var(--accent-color-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .security-details {
+            flex: 2;
+        }
+        .security-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .security-details p {
+            margin-bottom: 1.5rem;
+        }
+        .security-details p:last-child {
+            margin-bottom: 0;
+        }
+
         /* --- Pricing Section --- */
         .pricing {
             padding: 100px 0;
-        }
-
-        .pricing-header {
-            text-align: center;
-            margin-bottom: 4rem;
         }
 
         .pricing-grid {
@@ -426,6 +461,17 @@
         @media (max-width: 992px) {
              .header .btn { display: none; }
              .nav-links { display: none; } /* Or implement a mobile menu */
+             .security-content {
+                flex-direction: column;
+                padding: 40px 30px;
+             }
+             .security-icon {
+                font-size: 8rem;
+                margin-bottom: 2rem;
+             }
+             .security-details {
+                text-align: center;
+             }
         }
         @media (max-width: 768px) {
             h1 { font-size: 2.8rem; }
@@ -444,6 +490,7 @@
              <nav>
                 <ul class="nav-links">
                     <li><a href="#features">Why GenSyn</a></li>
+                    <li><a href="#security">Security</a></li>
                     <li><a href="#pricing">Models & Pricing</a></li>
                 </ul>
             </nav>
@@ -464,7 +511,7 @@
         <!-- Features Section -->
         <section id="features" class="features animated-section">
             <div class="container">
-                <div class="features-header">
+                <div class="section-header">
                     <h2>The GenSyn Advantage</h2>
                     <p>Go beyond limitations. Create the exact data you need, at any scale.</p>
                 </div>
@@ -488,10 +535,31 @@
             </div>
         </section>
 
+        <!-- Security Section -->
+        <section id="security" class="security animated-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Your Data, Your Fortress</h2>
+                    <p>Build with confidence on a platform engineered for unyielding privacy and security.</p>
+                </div>
+                <div class="security-content">
+                    <div class="security-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="security-details">
+                        <h3>Your Private Generation Environment</h3>
+                        <p>Your requests and generated datasets are processed in a fully sandboxed environment. Your data is never co-mingled or exposed to other users, ensuring complete confidentiality.</p>
+                        <h3>We Never Train on Your Data</h3>
+                        <p>We believe your data is yours alone. GenSyn will never use your prompts or generated outputs to train any models. Your intellectual property remains yours, always.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Pricing Section -->
         <section id="pricing" class="pricing animated-section">
             <div class="container">
-                <div class="pricing-header">
+                <div class="section-header">
                     <h2>Our Model Fleet & Pricing</h2>
                     <p>Direct access to a curated selection of industry-leading models for text and image synthesis.</p>
                 </div>
